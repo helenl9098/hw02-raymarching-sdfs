@@ -1,5 +1,8 @@
 # The Reddit Gold Universe - Hanyu Liu (liuhanyu)
 
+## Inspiration
+![](media.png)
+
 ## Live Demo Link 
 
 https://helenl9098.github.io/hw02-raymarching-sdfs/
