@@ -31,6 +31,8 @@ class ShaderProgram {
   unifTime: WebGLUniformLocation;
   unifStickiness : WebGLUniformLocation;
   unifBounce : WebGLUniformLocation;
+  unifTrans : WebGLUniformLocation;
+  unifMap: WebGLUniformLocation;
 
   constructor(shaders: Array<Shader>) {
     this.prog = gl.createProgram();
@@ -51,6 +53,8 @@ class ShaderProgram {
     this.unifTime   = gl.getUniformLocation(this.prog, "u_Time");
     this.unifStickiness = gl.getUniformLocation(this.prog, "u_Stickiness");
     this.unifBounce = gl.getUniformLocation(this.prog, "u_Bounce");
+    this.unifTrans = gl.getUniformLocation(this.prog, "u_Trans");
+    this.unifMap = gl.getUniformLocation(this.prog, "u_Map");
   }
 
   use() {
@@ -87,6 +91,13 @@ class ShaderProgram {
     }
   }
 
+  setTrans(t: vec2) {
+    this.use();
+    if(this.unifTrans !== -1) {
+      gl.uniform2f(this.unifTrans, t[0], t[1]);
+    }
+  }
+
   setSticky(t : number) {
     this.use();
     if (this.unifStickiness !== -1) {
@@ -98,6 +109,21 @@ class ShaderProgram {
     this.use();
     if (this.unifBounce !== -1) {
       gl.uniform1f(this.unifBounce, t);
+    }
+  }
+
+  setMap(m: string) {
+    this.use();
+    if (this.unifMap != -1) {
+      if (m == "rings") {
+          gl.uniform1f(this.unifMap, 0.0);
+      }
+      else if (m == "cube") {
+          gl.uniform1f(this.unifMap, 1.0);
+      }
+      else {
+          gl.uniform1f(this.unifMap, 2.0);
+      }
     }
   }
 

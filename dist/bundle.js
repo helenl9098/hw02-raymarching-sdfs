@@ -212,9 +212,9 @@ function invert(out, a) {
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_4__gl_matrix_mat4_js__; });
 /* unused harmony reexport quat */
 /* unused harmony reexport quat2 */
-/* unused harmony reexport vec2 */
-/* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_8__gl_matrix_vec3_js__; });
-/* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_9__gl_matrix_vec4_js__; });
+/* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_7__gl_matrix_vec2_js__; });
+/* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_8__gl_matrix_vec3_js__; });
+/* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "d", function() { return __WEBPACK_IMPORTED_MODULE_9__gl_matrix_vec4_js__; });
 
 
 
@@ -5917,25 +5917,58 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 // This will be referred to by dat.GUI's functions that add GUI elements.
 const controls = {
     stickiness: 0.1,
-    bounceSpeed: 70.0
+    bounceSpeed: 70.0,
+    map: 'rings'
 };
 let square;
 let time = 0;
+let wPressed;
+let aPressed;
+let sPressed;
+let dPressed;
+let translation;
 function loadScene() {
-    square = new __WEBPACK_IMPORTED_MODULE_3__geometry_Square__["a" /* default */](__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* vec3 */].fromValues(0, 0, 0));
+    square = new __WEBPACK_IMPORTED_MODULE_3__geometry_Square__["a" /* default */](__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec3 */].fromValues(0, 0, 0));
     square.create();
+    wPressed = false;
+    aPressed = false;
+    sPressed = false;
+    dPressed = false;
+    translation = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* vec2 */].fromValues(0, 0);
     // time = 0;
 }
 function main() {
     window.addEventListener('keypress', function (e) {
         // console.log(e.key);
         switch (e.key) {
-            // Use this if you wish
+            case 'w':
+                wPressed = true;
+                break;
+            case 'a':
+                aPressed = true;
+                break;
+            case 's':
+                sPressed = true;
+                break;
+            case 'd':
+                dPressed = true;
+                break;
         }
     }, false);
     window.addEventListener('keyup', function (e) {
         switch (e.key) {
-            // Use this if you wish
+            case 'w':
+                wPressed = false;
+                break;
+            case 'a':
+                aPressed = false;
+                break;
+            case 's':
+                sPressed = false;
+                break;
+            case 'd':
+                dPressed = false;
+                break;
         }
     }, false);
     // Initial display for framerate
@@ -5947,8 +5980,9 @@ function main() {
     document.body.appendChild(stats.domElement);
     // Add controls to the gui
     const gui = new __WEBPACK_IMPORTED_MODULE_2_dat_gui__["GUI"]();
-    gui.add(controls, 'stickiness', 0.0, 5.0);
-    gui.add(controls, 'bounceSpeed', 0.1, 100.0);
+    var guiMap = gui.add(controls, 'map', ['rings', 'cube', 'map #3']);
+    // gui.add(controls, 'stickiness', 0.0, 5.0);
+    // gui.add(controls, 'bounceSpeed', 0.1, 100.0);
     // get canvas and webgl context
     const canvas = document.getElementById('canvas');
     const gl = canvas.getContext('webgl2');
@@ -5960,7 +5994,7 @@ function main() {
     Object(__WEBPACK_IMPORTED_MODULE_6__globals__["b" /* setGL */])(gl);
     // Initial call to load scene
     loadScene();
-    const camera = new __WEBPACK_IMPORTED_MODULE_5__Camera__["a" /* default */](__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* vec3 */].fromValues(0, 0, -10), __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* vec3 */].fromValues(0, 0, 0));
+    const camera = new __WEBPACK_IMPORTED_MODULE_5__Camera__["a" /* default */](__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec3 */].fromValues(0, 0, -10), __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec3 */].fromValues(0, 0, 0));
     const renderer = new __WEBPACK_IMPORTED_MODULE_4__rendering_gl_OpenGLRenderer__["a" /* default */](canvas);
     renderer.setClearColor(164.0 / 255.0, 233.0 / 255.0, 1.0, 1);
     gl.enable(gl.DEPTH_TEST);
@@ -5969,7 +6003,18 @@ function main() {
         new __WEBPACK_IMPORTED_MODULE_7__rendering_gl_ShaderProgram__["a" /* Shader */](gl.FRAGMENT_SHADER, __webpack_require__(69)),
     ]);
     function processKeyPresses() {
-        // Use this if you wish
+        if (wPressed) {
+            translation[1] += 1.0;
+        }
+        if (aPressed) {
+            translation[0] += 1.0;
+        }
+        if (sPressed) {
+            translation[1] -= 1.0;
+        }
+        if (dPressed) {
+            translation[0] -= 1.0;
+        }
     }
     // This function will be called every frame
     function tick() {
@@ -5980,7 +6025,7 @@ function main() {
         processKeyPresses();
         renderer.render(camera, flat, [
             square,
-        ], time, controls.stickiness, controls.bounceSpeed);
+        ], time, controls.stickiness, controls.bounceSpeed, controls.map, translation);
         time++;
         stats.end();
         // Tell the browser to call `tick` again whenever it renders a new frame
@@ -7882,50 +7927,51 @@ function equals(a, b) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export create */
-/* unused harmony export clone */
-/* unused harmony export fromValues */
-/* unused harmony export copy */
-/* unused harmony export set */
-/* unused harmony export add */
-/* unused harmony export subtract */
-/* unused harmony export multiply */
-/* unused harmony export divide */
-/* unused harmony export ceil */
-/* unused harmony export floor */
-/* unused harmony export min */
-/* unused harmony export max */
-/* unused harmony export round */
-/* unused harmony export scale */
-/* unused harmony export scaleAndAdd */
-/* unused harmony export distance */
-/* unused harmony export squaredDistance */
-/* unused harmony export length */
-/* unused harmony export squaredLength */
-/* unused harmony export negate */
-/* unused harmony export inverse */
-/* unused harmony export normalize */
-/* unused harmony export dot */
-/* unused harmony export cross */
-/* unused harmony export lerp */
-/* unused harmony export random */
-/* unused harmony export transformMat2 */
-/* unused harmony export transformMat2d */
-/* unused harmony export transformMat3 */
-/* unused harmony export transformMat4 */
-/* unused harmony export rotate */
-/* unused harmony export angle */
-/* unused harmony export str */
-/* unused harmony export exactEquals */
-/* unused harmony export equals */
-/* unused harmony export len */
-/* unused harmony export sub */
-/* unused harmony export mul */
-/* unused harmony export div */
-/* unused harmony export dist */
-/* unused harmony export sqrDist */
-/* unused harmony export sqrLen */
-/* unused harmony export forEach */
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (immutable) */ __webpack_exports__["create"] = create;
+/* harmony export (immutable) */ __webpack_exports__["clone"] = clone;
+/* harmony export (immutable) */ __webpack_exports__["fromValues"] = fromValues;
+/* harmony export (immutable) */ __webpack_exports__["copy"] = copy;
+/* harmony export (immutable) */ __webpack_exports__["set"] = set;
+/* harmony export (immutable) */ __webpack_exports__["add"] = add;
+/* harmony export (immutable) */ __webpack_exports__["subtract"] = subtract;
+/* harmony export (immutable) */ __webpack_exports__["multiply"] = multiply;
+/* harmony export (immutable) */ __webpack_exports__["divide"] = divide;
+/* harmony export (immutable) */ __webpack_exports__["ceil"] = ceil;
+/* harmony export (immutable) */ __webpack_exports__["floor"] = floor;
+/* harmony export (immutable) */ __webpack_exports__["min"] = min;
+/* harmony export (immutable) */ __webpack_exports__["max"] = max;
+/* harmony export (immutable) */ __webpack_exports__["round"] = round;
+/* harmony export (immutable) */ __webpack_exports__["scale"] = scale;
+/* harmony export (immutable) */ __webpack_exports__["scaleAndAdd"] = scaleAndAdd;
+/* harmony export (immutable) */ __webpack_exports__["distance"] = distance;
+/* harmony export (immutable) */ __webpack_exports__["squaredDistance"] = squaredDistance;
+/* harmony export (immutable) */ __webpack_exports__["length"] = length;
+/* harmony export (immutable) */ __webpack_exports__["squaredLength"] = squaredLength;
+/* harmony export (immutable) */ __webpack_exports__["negate"] = negate;
+/* harmony export (immutable) */ __webpack_exports__["inverse"] = inverse;
+/* harmony export (immutable) */ __webpack_exports__["normalize"] = normalize;
+/* harmony export (immutable) */ __webpack_exports__["dot"] = dot;
+/* harmony export (immutable) */ __webpack_exports__["cross"] = cross;
+/* harmony export (immutable) */ __webpack_exports__["lerp"] = lerp;
+/* harmony export (immutable) */ __webpack_exports__["random"] = random;
+/* harmony export (immutable) */ __webpack_exports__["transformMat2"] = transformMat2;
+/* harmony export (immutable) */ __webpack_exports__["transformMat2d"] = transformMat2d;
+/* harmony export (immutable) */ __webpack_exports__["transformMat3"] = transformMat3;
+/* harmony export (immutable) */ __webpack_exports__["transformMat4"] = transformMat4;
+/* harmony export (immutable) */ __webpack_exports__["rotate"] = rotate;
+/* harmony export (immutable) */ __webpack_exports__["angle"] = angle;
+/* harmony export (immutable) */ __webpack_exports__["str"] = str;
+/* harmony export (immutable) */ __webpack_exports__["exactEquals"] = exactEquals;
+/* harmony export (immutable) */ __webpack_exports__["equals"] = equals;
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "len", function() { return len; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sub", function() { return sub; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mul", function() { return mul; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "div", function() { return div; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dist", function() { return dist; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sqrDist", function() { return sqrDist; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sqrLen", function() { return sqrLen; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "forEach", function() { return forEach; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(0);
 
 
@@ -13006,7 +13052,7 @@ dat.utils.common);
 class Square extends __WEBPACK_IMPORTED_MODULE_1__rendering_gl_Drawable__["a" /* default */] {
     constructor(center) {
         super(); // Call the constructor of the super class. This is required.
-        this.center = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec4 */].fromValues(center[0], center[1], center[2], 1);
+        this.center = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec4 */].fromValues(center[0], center[1], center[2], 1);
     }
     create() {
         this.indices = new Uint32Array([0, 1, 2,
@@ -13099,11 +13145,13 @@ class OpenGLRenderer {
     clear() {
         __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].clear(__WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].COLOR_BUFFER_BIT | __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].DEPTH_BUFFER_BIT);
     }
-    render(camera, prog, drawables, time, sticky, bounce) {
+    render(camera, prog, drawables, time, sticky, bounce, map, translation) {
         prog.setEyeRefUp(camera.controls.eye, camera.controls.center, camera.controls.up);
         prog.setTime(time);
         prog.setSticky(sticky);
         prog.setBounce(bounce);
+        prog.setTrans(translation);
+        prog.setMap(map);
         for (let drawable of drawables) {
             prog.draw(drawable);
         }
@@ -13125,19 +13173,19 @@ class Camera {
     constructor(position, target) {
         this.projectionMatrix = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["a" /* mat4 */].create();
         this.viewMatrix = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["a" /* mat4 */].create();
-        this.fovy = 45;
+        this.fovy = 90;
         this.aspectRatio = 1;
         this.near = 0.1;
         this.far = 1000;
-        this.position = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* vec3 */].create();
-        this.direction = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* vec3 */].create();
-        this.target = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* vec3 */].create();
-        this.up = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* vec3 */].create();
+        this.position = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec3 */].create();
+        this.direction = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec3 */].create();
+        this.target = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec3 */].create();
+        this.up = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec3 */].create();
         this.controls = CameraControls(document.getElementById('canvas'), {
             eye: position,
             center: target,
         });
-        __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* vec3 */].add(this.target, this.position, this.direction);
+        __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec3 */].add(this.target, this.position, this.direction);
         __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["a" /* mat4 */].lookAt(this.viewMatrix, this.controls.eye, this.controls.center, this.controls.up);
     }
     setAspectRatio(aspectRatio) {
@@ -13148,7 +13196,7 @@ class Camera {
     }
     update() {
         this.controls.tick();
-        __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* vec3 */].add(this.target, this.position, this.direction);
+        __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec3 */].add(this.target, this.position, this.direction);
         __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["a" /* mat4 */].lookAt(this.viewMatrix, this.controls.eye, this.controls.center, this.controls.up);
     }
 }
@@ -16259,6 +16307,8 @@ class ShaderProgram {
         this.unifTime = __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].getUniformLocation(this.prog, "u_Time");
         this.unifStickiness = __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].getUniformLocation(this.prog, "u_Stickiness");
         this.unifBounce = __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].getUniformLocation(this.prog, "u_Bounce");
+        this.unifTrans = __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].getUniformLocation(this.prog, "u_Trans");
+        this.unifMap = __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].getUniformLocation(this.prog, "u_Map");
     }
     use() {
         if (activeProgram !== this.prog) {
@@ -16290,6 +16340,12 @@ class ShaderProgram {
             __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].uniform1f(this.unifTime, t);
         }
     }
+    setTrans(t) {
+        this.use();
+        if (this.unifTrans !== -1) {
+            __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].uniform2f(this.unifTrans, t[0], t[1]);
+        }
+    }
     setSticky(t) {
         this.use();
         if (this.unifStickiness !== -1) {
@@ -16300,6 +16356,20 @@ class ShaderProgram {
         this.use();
         if (this.unifBounce !== -1) {
             __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].uniform1f(this.unifBounce, t);
+        }
+    }
+    setMap(m) {
+        this.use();
+        if (this.unifMap != -1) {
+            if (m == "rings") {
+                __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].uniform1f(this.unifMap, 0.0);
+            }
+            else if (m == "cube") {
+                __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].uniform1f(this.unifMap, 1.0);
+            }
+            else {
+                __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].uniform1f(this.unifMap, 2.0);
+            }
         }
     }
     draw(d) {
@@ -16328,7 +16398,7 @@ module.exports = "#version 300 es\r\nprecision highp float;\r\n\r\n// The vertex
 /* 69 */
 /***/ (function(module, exports) {
 
-module.exports = "#version 300 es\r\nprecision highp float;\r\n\r\nuniform vec3 u_Eye, u_Ref, u_Up;\r\nuniform vec2 u_Dimensions;\r\nuniform float u_Time;\r\nuniform float u_Stickiness;\r\nuniform float u_Bounce;\r\n\r\nin vec2 fs_Pos;\r\nout vec4 out_Col;\r\n\r\n// based off of http://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/\r\nfloat intersectSDF(float distA, float distB) {\r\n    return max(distA, distB);\r\n}\r\n\r\nfloat unionSDF(float distA, float distB) {\r\n    return min(distA, distB);\r\n}\r\n\r\nfloat differenceSDF(float distA, float distB) {\r\n    return max(distA, -distB);\r\n}\r\n\r\n// based off of http://iquilezles.org/www/articles/distfunctions/distfunctions.htm\r\nfloat opSmoothUnion( float d1, float d2, float k ) {\r\n    float h = clamp( 0.5 + 0.5*(d2-d1)/k, 0.0, 1.0 );\r\n    return mix( d2, d1, h ) - k*h*(1.0-h); \r\n}\r\n\r\nfloat opSmoothIntersection( float d1, float d2, float k ) {\r\n    float h = clamp( 0.5 - 0.5*(d2-d1)/k, 0.0, 1.0 );\r\n    return mix( d2, d1, h ) + k*h*(1.0-h); \r\n}\r\n\r\n\r\nmat4 rotateX(float theta) {\r\n    float c = cos(radians(theta));\r\n    float s = sin(radians(theta));\r\n\r\n    return mat4(\r\n        vec4(1, 0, 0, 0),\r\n        vec4(0, c, s, 0),\r\n        vec4(0, -s, c, 0),\r\n        vec4(0, 0, 0, 1)\r\n    );\r\n}\r\n\r\nmat4 rotateZ(float theta) {\r\n    float c = cos(radians(theta));\r\n    float s = sin(radians(theta));\r\n\r\n    return mat4(\r\n        vec4(c, s, 0, 0),\r\n        vec4(-s, c, 0, 0),\r\n        vec4(0, 0, 1, 0),\r\n        vec4(0, 0, 0, 1)\r\n    );\r\n}\r\n\r\nfloat parabola (float x, float k) {\r\n  return pow(4.0 * x * (1.0 - x), k);\r\n}\r\n\r\nvec3 getRayDirection() {\r\n\r\n  float fovy = 30.0;\r\n  vec3 look = normalize(u_Ref - u_Eye);\r\n  vec3 right = normalize(cross(look, u_Up));\r\n  vec3 up = cross(right, look);\r\n\r\n  float tan_fovy = tan(radians(fovy / 2.0));\r\n  float len = length(u_Ref - u_Eye);\r\n  float aspect = u_Dimensions.x / float(u_Dimensions.y);\r\n\r\n  vec3 v = up * len * tan_fovy;\r\n  vec3 h = right * len * aspect * tan_fovy;\r\n\r\n  vec3 p = u_Ref + fs_Pos.x * h + fs_Pos.y * v;\r\n  vec3 dir = normalize(p - u_Eye);\r\n\r\n  return dir;\r\n\r\n}\r\n\r\nfloat sdBox( vec3 p, vec3 b )\r\n{\r\n  vec3 d = abs(p) - b;\r\n  return length(max(d,0.0))\r\n         + min(max(d.x,max(d.y,d.z)),0.0); // remove this line for an only partially signed sdf \r\n}\r\n\r\nfloat sdEllipsoid( in vec3 p, in vec3 r )\r\n{\r\n    float k0 = length(p/r);\r\n    float k1 = length(p/(r*r));\r\n    return k0*(k0-1.0)/k1;\r\n}\r\n\r\nfloat sdTorus( vec3 p, vec2 t )\r\n{\r\n  vec2 q = vec2(length(p.xz)-t.x,p.y);\r\n  return length(q)-t.y;\r\n}\r\n\r\nfloat sdSphere( vec3 p, float s )\r\n{\r\n  return length(p)-s;\r\n}\r\n\r\nfloat sdCappedCylinder( vec3 p, vec2 h )\r\n{\r\n  vec2 d = abs(vec2(length(p.xz),p.y)) - h;\r\n  return min(max(d.x,d.y),0.0) + length(max(d,0.0));\r\n}\r\n\r\nvec2 calcCircle( float theta, float radius) {\r\n  float y = radius * sin(radians(theta)); \r\n  float x = radius * cos(radians(theta));\r\n  return vec2(-x, -y - 0.7);\r\n}\r\n\r\n\r\nstruct BoundingSphere {\r\n  float radius;\r\n  vec3 origin;\r\n};\r\n\r\nbool getSphereIntersection(vec3 dir, BoundingSphere s) {\r\n\r\n// substitute into sphere equation\r\n    float a = pow(dir.x, 2.0) +\r\n              pow(dir.y, 2.0) +\r\n              pow(dir.z, 2.0);\r\n    float b = 2.0 * (dir.x * (u_Eye.x - s.origin.x) +\r\n              dir.y * (u_Eye.y - s.origin.y) +\r\n              dir.z * (u_Eye.z - s.origin.z));\r\n    float c = pow((u_Eye.x - s.origin.x), 2.0) +\r\n              pow((u_Eye.y - s.origin.y), 2.0) +\r\n              pow((u_Eye.z - s.origin.z), 2.0) -\r\n              pow(s.radius, 2.0);\r\n\r\n// check to see if discrim is less than 0\r\n    float discrim = pow(b, 2.0) - (4.0 * a * c);\r\n    if (discrim >= 0.0) {\r\n        return true;\r\n    }\r\n    else {\r\n        return false;\r\n    }\r\n}\r\n\r\n\r\nfloat sceneSDF(vec3 p) {\r\n\r\n  /**********LOADING RINGS AND CIRCLES*********/\r\n\r\n  float circleRadius = .75;\r\n  float loadingRingRadius = 9.0 + sin(u_Time / 100.0);\r\n  float loadingRingRadius2 = 9.0 + sin((u_Time + 40.0) / 100.0);\r\n  float loadingRingRadius3 = 9.0 + sin((u_Time + 60.0) / 100.0);\r\n\r\n  vec3 ringPoint = (inverse(rotateX(90.0)) * vec4(p, 1.0)).xyz;\r\n  float loadingRing1 = sdTorus(ringPoint + vec3(0, 0, 0.7), vec2(loadingRingRadius, 0.15));\r\n\r\n\r\n  float theta = mod(-1.0 * u_Time * 5.0, 361.0);\r\n  float loadingRingCircle1 = sdSphere(p + vec3(calcCircle(theta, loadingRingRadius), 0.0), circleRadius);\r\n\r\n  float loadingRing2 = sdTorus(ringPoint + vec3(0, 0, 0.7), vec2(loadingRingRadius2 * 3.0 - 14.0, 0.15));\r\n  float theta2 = mod((u_Time + 40.0) * 1.5, 360.0);\r\n  float loadingRingCircle4 = sdSphere(p + vec3(calcCircle(theta2, loadingRingRadius2 * 3.0 - 14.0), 0.0), circleRadius);\r\n\r\n  float loadingRing3 = sdTorus(ringPoint + vec3(0, 0, 0.7), vec2(loadingRingRadius3 * 6.0 - 36.0, 0.15));\r\n  float theta3 = mod(-1.0 * (u_Time + 100.0) * 3.2, 360.0);\r\n  float loadingRingCircle5 = sdSphere(p + vec3(calcCircle(theta3, loadingRingRadius3 * 6.0 - 36.0), 0.0), circleRadius);\r\n  \r\n  \r\n /*********ADDING EVERYTHING TOGETHER***********/\r\n\r\n  float blendFactor = u_Stickiness;\r\n  float ring1 = loadingRing1;\r\n  ring1 = opSmoothUnion(ring1, loadingRingCircle1, blendFactor);\r\n\r\n  float ring2 = unionSDF(ring1, loadingRing2);\r\n  ring2 = opSmoothUnion(ring2, loadingRingCircle4, blendFactor);\r\n\r\n  float ring3 = unionSDF(ring2, loadingRing3);\r\n  ring3 = opSmoothUnion(ring3, loadingRingCircle5, blendFactor);\r\n\r\n  return ring3;\r\n}\r\n\r\nfloat sceneSDFRobot(vec3 p) {\r\n  // bob entire robot up and down\r\n  float pY = p.y;\r\n  p.y = p.y + sin(u_Time / (100.0 - u_Bounce)) * 0.5;\r\n\r\n  // body + ears\r\n  float leftEarDist = sdSphere(p + vec3(-3.0, -1.114, .5), 0.861);\r\n  float rightEarDist = sdSphere(p + vec3(3.0, -1.114, .5), 0.861);\r\n  float ellipseDist = sdEllipsoid(p, vec3(3.528, 2.417, 2.417));\r\n\r\n\r\n  // eyes\r\n  vec3 eyePoint = (inverse(rotateX(90.0)) * vec4(p, 1.0)).xyz;\r\n  float leftEyeDist = sdCappedCylinder(eyePoint + vec3(-1.2, 0, 0.5), \r\n                                vec2(0.497, 3.0));\r\n  float rightEyeDist = sdCappedCylinder(eyePoint + vec3(1.2, 0, 0.5), \r\n                                vec2(0.497, 3.0));\r\n  \r\n  // antenna\r\n  vec3 antPoint = (inverse(rotateZ(20.0)) * vec4(p, 1.0)).xyz;\r\n  antPoint = antPoint + vec3(-0.8, -2.8, 0);\r\n  float ant1 = sdCappedCylinder(antPoint, vec2(0.16, 1.6));\r\n  vec3 antPoint2 = (inverse(rotateZ(110.0)) * vec4(p, 1.0)).xyz;\r\n  float ant2 = sdCappedCylinder(antPoint2 + vec3(-4.26, -0.2, 0), vec2(0.16, 1.1));\r\n  float ant3 = sdSphere(p + vec3(2.3, -3.7, 0), 0.5);\r\n\r\n\r\n  // mouth\r\n  vec3 mouthPoint = (inverse(rotateX(90.0)) * vec4(p, 1.0)).xyz;\r\n  float mouthDist = sdCappedCylinder(mouthPoint + vec3(0, 0, 0.4), \r\n                                     vec2(1.747, 4.0));\r\n  float mouthDist2 = sdCappedCylinder(mouthPoint+ vec3(0, 0, 0.7), \r\n                                     vec2(1.747, 5.0));\r\n  float mouthCutCube = sdBox(p, vec3(1.8, 0.8, 5.0));\r\n  mouthDist = differenceSDF(mouthDist, mouthDist2);\r\n  mouthDist = differenceSDF(mouthDist, mouthCutCube);\r\n\r\n  vec3 mouthCirclePoint = (inverse(rotateX(90.0)) * vec4(p, 1.0)).xyz;\r\n  float leftMouthDist = sdCappedCylinder(eyePoint + vec3(-1.1, 0, -0.85), \r\n                                vec2(0.137, 4.0));\r\n  float rightMouthDist = sdCappedCylinder(eyePoint + vec3(1.1, 0, -0.85), \r\n                                vec2(0.137, 4.0));\r\n\r\n  float mouthCutCube2 = sdBox(p, vec3(1.2, 1.8, 5.0));\r\n  mouthDist = opSmoothUnion(mouthDist, leftMouthDist, 0.20);\r\n  mouthDist = opSmoothUnion(mouthDist, rightMouthDist, 0.20);\r\n  mouthDist = opSmoothIntersection(mouthDist, mouthCutCube2, 0.1);\r\n  float mouthDist3 = sdCappedCylinder(mouthPoint + vec3(0, 0, -0.3), \r\n                                     vec2(1.31, 4.0));\r\n  mouthDist = opSmoothIntersection(mouthDist, mouthDist3, 0.1);\r\n\r\n  /*********ADDING EVERYTHING TOGETHER***********/\r\n  float oneEar = opSmoothUnion(leftEarDist, ellipseDist, 0.25);\r\n  float bothEars = opSmoothUnion(oneEar, rightEarDist, 0.25);\r\n  float oneEye = differenceSDF(bothEars, leftEyeDist);\r\n  float twoEyes = differenceSDF(oneEye, rightEyeDist);\r\n\r\n  float antPart1 = unionSDF(twoEyes, ant1);\r\n  float antPart2 = opSmoothUnion(ant1, ant2, 0.13);\r\n  antPart2 = unionSDF(antPart2, ant3);\r\n  antPart2 = unionSDF(twoEyes, antPart2);\r\n  antPart2 = differenceSDF(antPart2, mouthDist);\r\n  p.y = pY;\r\n  antPart2 = unionSDF(antPart2, sceneSDF(p));\r\n  return antPart2;\r\n}\r\n\r\nvec3 estimateNormal(vec3 p, bool robot) {\r\n  float EPSILON = 0.001;\r\n\r\n  if (robot) {\r\n    return normalize(vec3(\r\n        sceneSDFRobot(vec3(p.x + EPSILON, p.y, p.z)) - sceneSDFRobot(vec3(p.x - EPSILON, p.y, p.z)),\r\n        sceneSDFRobot(vec3(p.x, p.y + EPSILON, p.z)) - sceneSDFRobot(vec3(p.x, p.y - EPSILON, p.z)),\r\n        sceneSDFRobot(vec3(p.x, p.y, p.z  + EPSILON)) - sceneSDFRobot(vec3(p.x, p.y, p.z - EPSILON))\r\n    ));\r\n  }\r\n  else {\r\n    return normalize(vec3(\r\n        sceneSDF(vec3(p.x + EPSILON, p.y, p.z)) - sceneSDF(vec3(p.x - EPSILON, p.y, p.z)),\r\n        sceneSDF(vec3(p.x, p.y + EPSILON, p.z)) - sceneSDF(vec3(p.x, p.y - EPSILON, p.z)),\r\n        sceneSDF(vec3(p.x, p.y, p.z  + EPSILON)) - sceneSDF(vec3(p.x, p.y, p.z - EPSILON))\r\n    ));\r\n  }\r\n}\r\n\r\n// returns color\r\nvec3 rayMarch(vec3 dir) {\r\n\r\n\r\n  BoundingSphere rings = BoundingSphere((9.0 + sin((u_Time + 60.0) / 100.0) + 0.5) * 6.0 - 36.0,\r\n                                        vec3(0, 0, 0.0));\r\n  BoundingSphere robot = BoundingSphere(6.3, vec3(0, 0.7, 0));\r\n\r\n  float depth = 0.0; \r\n  int MAX_MARCHING_STEPS = 1000;\r\n  float EPSILON = 0.00001;\r\n  float MAX_TRACE_DISTANCE = 1000.0;\r\n\r\n\r\n  if (getSphereIntersection(dir, rings)) {\r\n    bool biggerSphere = true;\r\n\r\n    if (getSphereIntersection(dir, robot)) {\r\n        biggerSphere = false;\r\n    }\r\n\r\n    for (int i = 0; i < MAX_MARCHING_STEPS; i++) {\r\n      vec3 point = u_Eye + depth * dir;\r\n\r\n      float dist = 1.0;\r\n      if (!biggerSphere) {\r\n        dist = sceneSDFRobot(point);\r\n      }\r\n      else {\r\n        dist = sceneSDF(point);\r\n      }\r\n\r\n      // we are inside the sphere!\r\n      if (dist < EPSILON) {\r\n\r\n        // gold shading\r\n        vec3 diffuseColor = vec3(221, 82, 22) / 255.;\r\n        float diffuseTerm = dot(normalize(vec3(-1, -1, -1) * estimateNormal(point, !biggerSphere)), normalize(u_Ref - u_Eye));\r\n        diffuseTerm = clamp(diffuseTerm, 0.0, 1.0);\r\n        float ambientTerm = 0.5;\r\n        float PI = 3.14159265358979323846;\r\n\r\n        vec3 color = vec3(0.5 + 0.5 * cos(2. * PI * (1.0 * diffuseTerm + 0.00)),\r\n                          0.5 + 0.5 * cos(2. * PI * (0.7 * diffuseTerm + 0.15)),\r\n                          0.5 + 0.5 * cos(2. * PI * (0.4 * diffuseTerm + 0.20)));\r\n        return color;\r\n      }\r\n\r\n      // keep going!\r\n      depth += dist;\r\n\r\n      // we went too far ... we should stop\r\n      if (depth >= MAX_TRACE_DISTANCE) {\r\n        return vec3(227, 244, 252) / 255.;\r\n      }\r\n    }\r\n  }\r\n  return vec3(227, 244, 252) / 255.;\r\n}\r\n\r\nvoid main() {\r\n\r\n  vec3 dir = getRayDirection();\r\n  out_Col = vec4(rayMarch(dir), 1.0);\r\n}\r\n"
+module.exports = "#version 300 es\r\nprecision highp float;\r\n\r\nuniform vec3 u_Eye, u_Ref, u_Up;\r\nuniform vec2 u_Dimensions;\r\nuniform float u_Time;\r\nuniform float u_Stickiness;\r\nuniform float u_Bounce;\r\nuniform vec2 u_Trans;\r\nuniform float u_Map;\r\n\r\n\r\nin vec2 fs_Pos;\r\nout vec4 out_Col;\r\n\r\nfloat noise( vec3 p , vec3 seed) {\r\n  return fract(sin(dot(p + seed, vec3(987.654, 123.456, 531.975))) * 85734.3545);\r\n}\r\n\r\n// based off of http://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/\r\nfloat intersectSDF(float distA, float distB) {\r\n    return max(distA, distB);\r\n}\r\n\r\nfloat unionSDF(float distA, float distB) {\r\n    return min(distA, distB);\r\n}\r\n\r\nfloat differenceSDF(float distA, float distB) {\r\n    return max(distA, -distB);\r\n}\r\n\r\n// based off of http://iquilezles.org/www/articles/distfunctions/distfunctions.htm\r\nfloat opSmoothUnion( float d1, float d2, float k ) {\r\n    float h = clamp( 0.5 + 0.5*(d2-d1)/k, 0.0, 1.0 );\r\n    return mix( d2, d1, h ) - k*h*(1.0-h); \r\n}\r\n\r\nfloat opSmoothIntersection( float d1, float d2, float k ) {\r\n    float h = clamp( 0.5 - 0.5*(d2-d1)/k, 0.0, 1.0 );\r\n    return mix( d2, d1, h ) + k*h*(1.0-h); \r\n}\r\n\r\n\r\nmat4 rotateX(float theta) {\r\n    float c = cos(radians(theta));\r\n    float s = sin(radians(theta));\r\n\r\n    return mat4(\r\n        vec4(1, 0, 0, 0),\r\n        vec4(0, c, s, 0),\r\n        vec4(0, -s, c, 0),\r\n        vec4(0, 0, 0, 1)\r\n    );\r\n}\r\n\r\nmat4 rotateZ(float theta) {\r\n    float c = cos(radians(theta));\r\n    float s = sin(radians(theta));\r\n\r\n    return mat4(\r\n        vec4(c, s, 0, 0),\r\n        vec4(-s, c, 0, 0),\r\n        vec4(0, 0, 1, 0),\r\n        vec4(0, 0, 0, 1)\r\n    );\r\n}\r\n\r\nvec3 getRayDirection() {\r\n\r\n  float fovy = 45.0;\r\n  vec3 look = normalize(u_Ref - u_Eye);\r\n  vec3 right = normalize(cross(look, u_Up));\r\n  vec3 up = cross(right, look);\r\n\r\n  float tan_fovy = tan(radians(fovy / 2.0));\r\n  float len = length(u_Ref - u_Eye);\r\n  float aspect = u_Dimensions.x / float(u_Dimensions.y);\r\n\r\n  vec3 v = up * len * tan_fovy;\r\n  vec3 h = right * len * aspect * tan_fovy;\r\n\r\n  vec3 p = u_Ref + fs_Pos.x * h + fs_Pos.y * v;\r\n  vec3 dir = normalize(p - u_Eye);\r\n\r\n  return dir;\r\n\r\n}\r\n\r\nfloat sdBox( vec3 p, vec3 b )\r\n{\r\n  vec3 d = abs(p) - b;\r\n  return length(max(d,0.0))\r\n         + min(max(d.x,max(d.y,d.z)),0.0); // remove this line for an only partially signed sdf \r\n}\r\n\r\nfloat sdEllipsoid( in vec3 p, in vec3 r )\r\n{\r\n    float k0 = length(p/r);\r\n    float k1 = length(p/(r*r));\r\n    return k0*(k0-1.0)/k1;\r\n}\r\n\r\nfloat sdTorus( vec3 p, vec2 t )\r\n{\r\n  vec2 q = vec2(length(p.xz)-t.x,p.y);\r\n  return length(q)-t.y;\r\n}\r\n\r\nfloat sdSphere( vec3 p, float s )\r\n{\r\n  return length(p)-s;\r\n}\r\n\r\nfloat sdCappedCylinder( vec3 p, vec2 h )\r\n{\r\n  vec2 d = abs(vec2(length(p.xz),p.y)) - h;\r\n  return min(max(d.x,d.y),0.0) + length(max(d,0.0));\r\n}\r\n\r\nvec2 path(float t) {\r\n  float a = 3.0 *sin(t * .1 + 1.5) / (1.0 + noise(vec3(0.0, 0.0, t), \r\n                                                vec3(0.0, 0.0,0.0))); \r\n  float b = sin(t*.2) / (4.0 + noise(vec3(0.0, 0.0, t), \r\n                                     vec3(0.0, 0.0,0.0)));\r\n  return vec2(2.*a, a*b);\r\n}\r\n\r\n\r\nfloat g = 0.;\r\nfloat sceneSDF(vec3 p) {\r\n\r\n  if (u_Map == 0.0) {\r\n      p += vec3(sin(p.z / (20.0)) * 3.0, sin(p.z / 20.0) * 3.0, 0.0);\r\n      vec3 ringPoint = (inverse(rotateX(90.0)) * vec4(p, 1.0)).xyz;\r\n      vec3 c = vec3(0.0, 7.0, 0.0);\r\n      vec3 q = mod(ringPoint,c)-0.5*c;\r\n      //q += vec3(0.0, 0.0, sin(p.x) + 1.0);\r\n      //q += vec3(0.0, 0.0, noise(vec3(0, 0, u_Time / 20.0), vec3(0, 0, 0)));\r\n      return sdTorus(q, vec2(4.0, 0.15));\r\n  }\r\n  else {\r\n    p.xy -= path(p.z);\r\n    float d = -length(p.xy) + 4.;// tunnel (inverted cylinder)\r\n    g += .015 / (.01 + d * d);\r\n    return d;\r\n  }\r\n\r\n}\r\n\r\nvec3 estimateNormal(vec3 p) {\r\n  float EPSILON = 0.001;\r\n    return normalize(vec3(\r\n        sceneSDF(vec3(p.x + EPSILON, p.y, p.z)) - sceneSDF(vec3(p.x - EPSILON, p.y, p.z)),\r\n        sceneSDF(vec3(p.x, p.y + EPSILON, p.z)) - sceneSDF(vec3(p.x, p.y - EPSILON, p.z)),\r\n        sceneSDF(vec3(p.x, p.y, p.z  + EPSILON)) - sceneSDF(vec3(p.x, p.y, p.z - EPSILON))\r\n    ));\r\n}\r\n\r\n// returns color\r\nvec3 rayMarch(vec3 dir) {\r\n  float time = u_Time / 1.5;\r\n  vec3 eye = u_Eye + vec3(u_Trans.x / 8.0, u_Trans.y / 8.0, time);\r\n  //vec3 eye = u_Eye;\r\n  //vec3 eye = u_Eye + vec3(u_Trans.x / 100.0, u_Trans.y / 100.0, 0);\r\n  \r\n  float depth = 0.0; \r\n  int MAX_MARCHING_STEPS = 1000;\r\n  float EPSILON = 0.0001;\r\n  float MAX_TRACE_DISTANCE = 1000.0;\r\n\r\n  vec4 fragCoord = gl_FragCoord;\r\n\r\n  // vignette\r\n  vec2 centerCoords = vec2(u_Dimensions.x / 2.0,\r\n                       u_Dimensions.y / 2.0);\r\n  float maxDistance = sqrt(pow(centerCoords.x, 2.0) +\r\n                           pow(centerCoords.y, 2.0));\r\n  float shortX = fragCoord.x - centerCoords.x;\r\n  float shortY = fragCoord.y - centerCoords.y;\r\n  float currentDistance = pow(shortX, 2.0) / pow(u_Dimensions.x, 2.0) +\r\n                          pow(shortY, 2.0) / pow(u_Dimensions.y, 2.0);\r\n\r\n  float intensity = 3.8; // how intense the vignette is\r\n  float vignette = currentDistance * intensity;\r\n  float intensity2 = 5.3; // how intense the vignette is\r\n  float vignette2 = currentDistance * intensity2;\r\n  vec3 vignetteColor = mix(vec3(1.0), vec3(0, 0, 0), vignette);\r\n  vec3 vignetteColor2 = mix(vec3(0.0), vec3(1.0, 0.9, 0.7), (1.0 - vignette2));\r\n\r\n\r\n    // center crosshair\r\n  if (fragCoord.x < centerCoords.x + 12.0 &&\r\n      fragCoord.x > centerCoords.x - 12.0 &&\r\n      fragCoord.y < centerCoords.y + 0.8 &&\r\n      fragCoord.y > centerCoords.y - 0.8) {\r\n    return vec3(1.0, 1.0, 1.0);\r\n  }\r\n  if (fragCoord.x < centerCoords.x + 0.8 &&\r\n    fragCoord.x > centerCoords.x - 0.8 &&\r\n    fragCoord.y < centerCoords.y + 12.0 &&\r\n    fragCoord.y > centerCoords.y - 12.0) {\r\n  return vec3(1.0, 1.0, 1.0);\r\n  }\r\n\r\n\r\n    // ***************************** MAP #1 ****************************************\r\n  if (u_Map == 0.0) {\r\n    // INTERSECTION TESTING\r\n      if (sceneSDF(eye) < EPSILON) {\r\n\r\n        return vec3(0, 0, 1);\r\n      }\r\n      for (int i = 0; i < MAX_MARCHING_STEPS; i++) {\r\n        vec3 point = eye + depth * dir;\r\n\r\n          float dist = sceneSDF(point);\r\n          // we are inside the sphere!\r\n          if (dist < EPSILON) {\r\n            // distance fog\r\n            float dist = point.z - time;\r\n            const vec3 fogColor = vec3(0.0, 0.0,0.1);\r\n            float fogFactor = 0.;\r\n            fogFactor = (70. - dist)/(70.0 - 30.0);\r\n            fogFactor = clamp( fogFactor, 0.0, 1.0 );\r\n    \r\n                     // gold shading\r\n                vec3 diffuseColor = vec3(221, 82, 22) / 255.;\r\n                float diffuseTerm = dot(normalize(vec3(-1, -1, -1) * estimateNormal(point)), normalize(u_Ref - u_Eye));\r\n                diffuseTerm = clamp(diffuseTerm, 0.0, 1.0);\r\n                float ambientTerm = 0.5;\r\n                float PI = 3.14159265358979323846;\r\n    \r\n                // vec3 color = vec3(0.5 + 0.5 * cos(2. * PI * (1.0 * diffuseTerm + 0.00)),\r\n                //                   0.5 + 0.5 * cos(2. * PI * (0.7 * diffuseTerm + 0.15)),\r\n                //                   0.5 + 0.5 * cos(2. * PI * (0.4 * diffuseTerm + 0.20)));\r\n                vec3 color = vec3(cos(u_Time / 180.0) + 1.5, \r\n                                  sin(u_Time / 200.0) + 1.5, \r\n                                  cos(u_Time / 220.0) + 1.5);\r\n                color = mix(fogColor, color, fogFactor);\r\n    \r\n                return color * vignetteColor;\r\n          }\r\n\r\n        // keep going!\r\n        depth += dist;\r\n\r\n         // we went too far ... we should stop\r\n         if (depth >= MAX_TRACE_DISTANCE) {\r\n           return vec3(0, 0, 0);\r\n         }\r\n\r\n      }\r\n\r\n  }\r\n\r\n // ******************* MAP #2 ****************************\r\n  else {\r\n\r\n      vec3 ro = vec3(u_Trans.x / 8.0, u_Trans.y / 8.0, -5. + time / 2.0);\r\n      vec3 p = floor(ro) + .5; \r\n      vec3 mask; \r\n      vec3 drd = 1.0 / abs(dir);\r\n      dir = sign(dir);\r\n      vec3 side = drd * (dir * (p - ro) + .5);\r\n    \r\n      float t = 0., ri = 0.;\r\n    \r\n      // INTERSECTION\r\n      if (sceneSDF(ro) < EPSILON) {\r\n        return vec3(0, 0, 1);\r\n      }\r\n      for (float i = 0.0; i < 1.0; i+= .01) {\r\n          float dist = sceneSDF(p);\r\n\r\n          if (dist < EPSILON) {\r\n          \r\n              break;\r\n          }\r\n          mask = step(side, side.yzx) * step(side, side.zxy);\r\n          // minimum value between x,y,z, output 0 or 1\r\n    \r\n          side += drd * mask;\r\n          p += dir * mask;\r\n      }\r\n    \r\n      t = length(p - ro);\r\n  \r\n      vec3 c = vec3(1) * length(mask * vec3(1., .5, .3));\r\n      c = mix(vec3(.8, .2, .7), vec3(.2, .1, .2), c);\r\n      c += g * .4;\r\n      c.g += sin(u_Time)*.2 + sin(p.z*.5 - u_Time * .1);// red rings\r\n      c = mix(c, vec3(.2, .1, .2), 1. - exp(-.001*t*t));// fog\r\n      return c;\r\n  }\r\n}\r\n\r\nvoid main() {\r\n\r\n  vec3 dir = getRayDirection();\r\n  //out_Col = vec4(0.5 * (dir + vec3(1.0, 1.0, 1.0)), 1.0);\r\n  out_Col = vec4(rayMarch(dir), 1.0);\r\n}\r\n"
 
 /***/ })
 /******/ ]);

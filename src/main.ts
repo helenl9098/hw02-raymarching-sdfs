@@ -11,15 +11,27 @@ import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
 // This will be referred to by dat.GUI's functions that add GUI elements.
 const controls = {
   stickiness: 0.1,
-  bounceSpeed: 70.0
+  bounceSpeed: 70.0,
+  map: 'rings'
 };
 
 let square: Square;
 let time: number = 0;
+let wPressed: boolean;
+let aPressed: boolean;
+let sPressed: boolean;
+let dPressed: boolean;
+let translation: vec2;
 
 function loadScene() {
   square = new Square(vec3.fromValues(0, 0, 0));
   square.create();
+
+  wPressed = false;
+  aPressed = false;
+  sPressed = false;
+  dPressed = false;
+  translation = vec2.fromValues(0, 0);
   // time = 0;
 }
 
@@ -27,13 +39,35 @@ function main() {
   window.addEventListener('keypress', function (e) {
     // console.log(e.key);
     switch(e.key) {
-      // Use this if you wish
+      case 'w':
+      wPressed = true;
+      break;
+      case 'a':
+      aPressed = true;
+      break;
+      case 's':
+      sPressed = true;
+      break;
+      case 'd':
+      dPressed = true;
+      break;
     }
   }, false);
 
   window.addEventListener('keyup', function (e) {
     switch(e.key) {
-      // Use this if you wish
+      case 'w':
+      wPressed = false;
+      break;
+      case 'a':
+      aPressed = false;
+      break;
+      case 's':
+      sPressed = false;
+      break;
+      case 'd':
+      dPressed = false;
+      break;
     }
   }, false);
 
@@ -47,8 +81,9 @@ function main() {
 
   // Add controls to the gui
   const gui = new DAT.GUI();
-  gui.add(controls, 'stickiness', 0.0, 5.0);
-  gui.add(controls, 'bounceSpeed', 0.1, 100.0);
+  var guiMap = gui.add(controls, 'map', ['rings', 'cube', 'map #3']);
+  // gui.add(controls, 'stickiness', 0.0, 5.0);
+  // gui.add(controls, 'bounceSpeed', 0.1, 100.0);
 
 
   // get canvas and webgl context
@@ -76,7 +111,18 @@ function main() {
   ]);
 
   function processKeyPresses() {
-    // Use this if you wish
+    if(wPressed) {
+      translation[1] += 1.0;
+    }
+    if(aPressed) {
+      translation[0] += 1.0;
+    }
+    if(sPressed) {
+     translation[1] -= 1.0;
+    }
+    if(dPressed) {
+      translation[0] -= 1.0;
+    }
   }
 
   // This function will be called every frame
@@ -88,7 +134,7 @@ function main() {
     processKeyPresses();
     renderer.render(camera, flat, [
       square,
-    ], time, controls.stickiness, controls.bounceSpeed);
+    ], time, controls.stickiness, controls.bounceSpeed, controls.map, translation);
     time++;
     stats.end();
 
